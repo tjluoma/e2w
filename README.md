@@ -198,4 +198,12 @@ After you go through these steps *ONE TIME* you can then log into your server wi
 
 1. Take a picture
 2. Email that picture to your `jpublic+SomeSecretWord@gmail.com` address
-3. Wait for an SMS
+3. Wait for an SMS, which will contain a URL to the image itself, as well as to the web page version (if applicable)
+
+## Notes ##
+
+
+* I use the [Google Voice app for iPhone](http://itunes.apple.com/us/app/google-voice/id318698524?mt=8) for push notifications
+* I use a POP3 account in Mail.app. Trying to use an IMAP account seemed to cause problems the body of the email being delivered. POP3 seems to wait until the entire message is downloaded before processing. You could even create a new Gmail account, enable POP, and just use that account for these purposes.
+
+
