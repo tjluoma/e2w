@@ -31,11 +31,6 @@ URL_PREFIX='http://i.luo.ma'
 
 
 
-	# if Hazel seems to be running too quickly, before the files are completely done downloading
-	# from Dropbox, increase this. It tells the script to wait this many seconds before running. I
-	# would recommend at least 15, and maybe as high as 60 if you are on a really slow connection
-SLEEP_COUNT=15
-
 
 #					You should not have to edit anything below here.
 
@@ -124,6 +119,7 @@ done
 
 # This is where Mail.app has been told to store the files which come in
 FROM_DIR="$HOME/MailAttachments"
+
 	# Don't assume the user gave you good information
 
 [[ -e "$FROM_DIR" ]] || die "FROM_DIR ($FROM_DIR) does not exist"
@@ -180,16 +176,6 @@ log "NUMBER is $NUMBER"
 
 COUNT="0"
 MAXCOUNT="10"
-
-	# We start off with just a short sleep
-	# and HOPE that is enough time for the download to complete
-
-# We want to give Dropbox a chance to finish downloading the files before we try to process them
-# You may need to adjust this, especially if your connection is slow or if you are sending full size pictures
-
-log "Sleeping $SLEEP_COUNT seconds"
-sleep "$SLEEP_COUNT"
-
 
 while [ "$COUNT" -le "$MAXCOUNT" ]
 do
@@ -267,17 +253,23 @@ then
 	# We will use the filename of the text file as the <title> and <h1> of the web page
 	TITLE="$TXT:t:r"
 
+	log "Title is $TITLE"
+
 	# extract the Creation Date information from the file.
 	# It will be in UTC
 	CDATE_UTC=$(mdls "$IMAGE" | awk -F' ' '/kMDItemContentCreationDate/{print $3" "$4}')
 
+	log "CDATE_UTC: $CDATE_UTC"
+
 	# Now convert that date/time into 'seconds since epoch'
-	CDATE_EPOCH=$(TZ=UTC strftime -r "%Y/%m/%d %H:%M:%S" "$CDATE_UTC")
+	CDATE_EPOCH=$(TZ=UTC strftime -r "%Y-%m-%d %H:%M:%S" "$CDATE_UTC")
+
+	log "CDATE_EPOCH: $CDATE_EPOCH"
 
 	# Now convert that 'seconds since epoch' to local time
 	CDATE_LOCAL=$(strftime "%Y/%m/%d %-I:%M:%S %p %Z" "$CDATE_EPOCH" )
 
-	log "CDATE_UTC: $CDATE_UTC ~ CDATE_EPOCH: $CDATE_EPOCH ~ CDATE_LOCAL: $CDATE_LOCAL"
+	log "CDATE_LOCAL: $CDATE_LOCAL"
 
 
 
@@ -285,10 +277,15 @@ then
 		# Note that we only need this if there's going to be a web page
 	SIZE=(`sips --getProperty pixelWidth --getProperty pixelHeight "$IMAGE" | awk -F' ' '/pixel/{print $NF}' `)
 
+	log "SIZE is $SIZE"
+
 	WIDTH="$SIZE[1]"
+
+	log "WIDTH is $WIDTH"
+
 	HEIGHT="$SIZE[2]"
 
-	log "SIZE is $SIZE. WIDTH is $WIDTH. HEIGHT is $HEIGHT. TITLE is $TITLE."
+	log "HEIGHT is $HEIGHT."
 
 
 
@@ -325,7 +322,7 @@ CSS: http://i.luo.ma/.i.css
 
 <figure>
 <figcaption>${TITLE}</figcaption>
-<a href=\"../$IMG_NAME\"><img width=${WIDTH} height=${HEIGHT} src=\"../$IMG_NAME\" border=1 alt='[image]' /></a>
+<a href=\"../$IMG_NAME\"><img style=\"max-width:100%; height: auto;\" width=${WIDTH} height=${HEIGHT} src=\"../$IMG_NAME\" border=1 alt='[image]' /></a>
 </figure>
 
 " && \
@@ -352,8 +349,8 @@ echo "
 
 		# once we have processed the text file, stick it in the trash
 
-	log "Trashing $TXT"
-	mv "$TXT" "$HOME/.Trash/"
+	log "moving $TXT to $DIR_NAME/"
+	mv "$TXT" "$DIR_NAME/"
 
 fi # IF a text file was found to do with the image
 

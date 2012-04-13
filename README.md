@@ -84,6 +84,8 @@ You could call the folder something else, but then you'll have to change the App
 
 Create a rule in Mail.app to run the `SaveAttachments.scpt` whenever you receive email to a specific email address. Most email services (including iCloud and Gmail) support "plus addressing" so if your email address is `jpublic@gmail.com` then you can *also* receive email at `jpublic+SomeSecretWord@gmail.com`
 
+Have the mail rule process on any message sent to `jpublic+SomeSecretWord@gmail.com`. Then add `jpublic+SomeSecretWord@gmail.com` to your iPhone address book so you don't have to remember it.
+
 I also have my rule mark the message as "Read" and flag it, so I can tell that it has been processed by the script. (This is handy if you are on your iPhone and want to see if the message has reached the server.)
 
 I set Mail.app to check for new email every 1 minute.
@@ -191,3 +193,9 @@ After you go through these steps *ONE TIME* you can then log into your server wi
 **If this step isn't done correctly, nothing else will work.**
 
 
+## Once it is all set up, here's how to use it: ##
+
+
+1. Take a picture
+2. Email that picture to your `jpublic+SomeSecretWord@gmail.com` address
+3. Wait for an SMS
